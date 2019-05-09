@@ -4,8 +4,8 @@
 
 int encoderPos=0, encoderLast = 0, encoderActual = 0;
 int radio = 36;
-float vueltas = 1;
-int potencia = 100;
+float vueltas = 10;
+int potencia = 255;
 
 void setup() {
   //Con este baudiaje se ajusta perfeccto
@@ -35,7 +35,8 @@ void setup() {
 //Funcion para contar
 void Encoder(){
   encoderPos++;
-  Serial.println(encoderPos);
+  //alcolocarse se realentyiza el sistema y colapsa la mediccion por eso mejor no colocar ningun print
+  //Serial.println(encoderPos);
 }
 
 void loop() {
@@ -45,6 +46,7 @@ void loop() {
     digitalWrite(7,1);  //Horario
     digitalWrite(8,1); //Antiorario
     analogWrite(5, potencia); //Pwm
+    Serial.println(encoderPos);
     while(1);
 
   }
