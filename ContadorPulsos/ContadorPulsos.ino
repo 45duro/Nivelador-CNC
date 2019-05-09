@@ -1,4 +1,4 @@
-int encoder = 2, encoderPos=0, encoderLast = 0, encoderActual = 0;
+int encoder = 3, encoderPos=0, encoderLast = 0, encoderActual = 0;
 int radio = 36;
 
 void setup() {
@@ -15,7 +15,7 @@ void setup() {
 
   digitalWrite(7,1);  //Horario
   digitalWrite(8,0); //Antiorario
-  analogWrite(5, 50); //Pwm
+  analogWrite(5, 20); //Pwm
 
 }
 
@@ -31,9 +31,12 @@ void loop() {
 
   encoderLast = encoderActual;
 
-  if(encoderActual > 2082){
+  if(encoderPos >= 378){
+    digitalWrite(7,0);  //Horario
+    digitalWrite(8,0); //Antiorario
     analogWrite(5, 0); //Pwm
     while(1);
+
   }
 
 }
