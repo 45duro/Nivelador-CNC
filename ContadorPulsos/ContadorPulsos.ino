@@ -4,7 +4,8 @@
 
 int encoderPos=0, encoderLast = 0, encoderActual = 0;
 int radio = 36;
-int vueltas = 2;
+float vueltas = 1;
+int potencia = 100;
 
 void setup() {
   //Con este baudiaje se ajusta perfeccto
@@ -27,7 +28,7 @@ void setup() {
   //Arranque de prueba para el motor
   digitalWrite(7,1);  //Horario
   digitalWrite(8,0); //Antiorario
-  analogWrite(5, 20); //Pwm
+  analogWrite(5, potencia); //Pwm
 
 }
 
@@ -43,7 +44,7 @@ void loop() {
   if(encoderPos >= (2096*vueltas)){
     digitalWrite(7,1);  //Horario
     digitalWrite(8,1); //Antiorario
-    analogWrite(5, 20); //Pwm
+    analogWrite(5, potencia); //Pwm
     while(1);
 
   }
