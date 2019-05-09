@@ -5,6 +5,18 @@ void setup() {
   pinMode(encoder, INPUT);
   Serial.begin(115200);
 
+  for(int j = 4; j <= 9; j++){
+    pinMode(j,1);
+  }
+
+  for(int j = 4; j <= 9; j++){
+    digitalWrite(j,0);
+  }
+
+  digitalWrite(7,1);  //Horario
+  digitalWrite(8,0); //Antiorario
+  analogWrite(5, 50); //Pwm
+
 }
 
 void loop() {
@@ -18,5 +30,10 @@ void loop() {
   }
 
   encoderLast = encoderActual;
+
+  if(encoderActual > 2082){
+    analogWrite(5, 0); //Pwm
+    while(1);
+  }
 
 }
