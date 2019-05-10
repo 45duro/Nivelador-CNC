@@ -26,6 +26,9 @@ Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
 //Variables Globales del programa
 String alturaChain = "";
+int altura = 0,limiteMaximo = 230, limiteMinimo = 110;
+
+byte seleccionador = 0;
 
 void setup()
 {
@@ -94,6 +97,9 @@ void keypadEvent(KeypadEvent key){
     case PRESSED:
         if (key == '*') {
           //Funcion solo presionar
+          alturaChain="";
+          lcd.clear();
+          
         }
 
         //Aquí hago una comparativa para saber que presiono numeros y debe sumarlos a la cadena principal
@@ -108,9 +114,20 @@ void keypadEvent(KeypadEvent key){
         break;
 
     case HOLD:
-        if (key == '*') {
+        if (key == '#') {
             //Funciones de enter
             Serial.println(alturaChain);
+            if(estaturaValida(alturaChain)){
+              //imprima correcto
+              altura = alturaChain.toInt();
+              lcd.clear();
+              lcd.print("Correcto... ");
+              seleccionador = 1;
+              delay(2000);
+              lcd.clear();
+              
+            }
+            
             alturaChain = "";
             
         }
@@ -118,17 +135,38 @@ void keypadEvent(KeypadEvent key){
     }
 }
 
-String altura = "";
+boolean estaturaValida(String altura){
+  int flag = altura.toInt();
+  if(flag <= limiteMaximo && flag >= limiteMinimo){
+    Serial.println("SI valida");
+    return true;
+  }
+  else{
+    Serial.println("No valida");
+    return false;
+  }
+}
 
 void loop()
 {
+  lcd.clear();
+  while(seleccionador == 0){
     //Funcion para obtener lo del teclado y activa el listener Event
-  char key = keypad.getKey();
-  lcd.setCursor(0, 0);
-  lcd.print("Digite su Altura ");
-  lcd.setCursor(0, 1);
-  lcd.print(" cm: ");
-  lcd.print(alturaChain);
+    char key = keypad.getKey();
+    
+    lcd.setCursor(0, 0);
+    lcd.print("Digite su Altura ");
+    lcd.setCursor(0, 1);
+    lcd.print(" cm: ");
+    lcd.print(alturaChain);
+  }
+
+  while(seleccionador == 1){
+      lcd.setCursor(0,0);
+      lcd.print("Ajustando el");
+      lcd.setCursor(0,1);
+      lcd.print("Sistema");
+  }
   
 
 }
