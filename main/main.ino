@@ -32,7 +32,7 @@ byte seleccionador = 0;
 // lo que quiere decir que para 360 grados de giro o una revolucion se obtendrá
 // 131*16 = 2096 tics a la salida
 
-unsigned long encoderPos=0;
+volatile unsigned long encoderPos=0;
 float vueltas = 1, constante = 0.125;
 int potencia = 200;
 
@@ -82,8 +82,6 @@ void arrancarMotor(){
 }
 
 
-
-
 void setup()
 {
   // initialize the lcd 
@@ -99,7 +97,7 @@ void setup()
   
   //Si o si toca con interrupcion ya que de otromodo lo hace mal, 
   //se queda o puierde pulso y el baudiaje de la comunicación lo vuelve loco
-  attachInterrupt(digitalPinToInterrupt(2), Encoder,FALLING);
+  attachInterrupt(digitalPinToInterrupt(2), Encoder,CHANGE);
   attachInterrupt(digitalPinToInterrupt(3), inHome,RISING);
   
   //Declaro los pines de salida
@@ -138,7 +136,6 @@ void mostrarBienvenida(){
   
   delay (5000);
 }
-
 
 void keypadEvent(KeypadEvent key){
     switch (keypad.getState()){
@@ -232,20 +229,19 @@ void loop()
       lcd.setCursor(0,1);
       lcd.print("    Sistema   ");
       seleccionador = 3;
-      Serial.println(altura);
+      
       altura *= 10;
-      Serial.println(altura);
       vueltas = constante * altura;
-      Serial.println(vueltas);
-      Serial.println(vueltas*2096);
+      //Serial.println(vueltas);
+      //Serial.println(vueltas*3900);
       arrancarMotor();
   }
 
   while(seleccionador == 3){
     Serial.println(encoderPos);
-    if(encoderPos >= (int(2096*vueltas))){
+    if(encoderPos > (int(4192*vueltas))){
       FrenarMotor();
-      Serial.println("joder");
+      //Serial.println("joder");
       Serial.println(encoderPos);
       seleccionador = 0;
 

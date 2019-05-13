@@ -3,35 +3,24 @@
 // 131*16 = 2096 tics a la salida
 
 volatile int encoderPos=0;
-float vueltas = 1;
-int potencia = 50;
+int vueltas = 1;
+int potencia = 2500, flancos=2000;
 //Motor
 byte giroAdelante = 9, giroAtras = 4, pinVelocidad = 6;
 
 
 void setup() {
   //Con este baudiaje se ajusta perfeccto
-  Serial.begin(57600);
+  Serial.begin(9600);
 
   //Si o si toca con interrupcion ya que de otromodo lo hace mal, 
   //se queda o puierde pulso y el baudiaje de la comunicación lo vuelve loco
-  attachInterrupt(digitalPinToInterrupt(2), Encoder,FALLING);
-  attachInterrupt(digitalPinToInterrupt(3), inHome,RISING);
+  attachInterrupt(digitalPinToInterrupt(2), Encoder,CHANGE);
+  attachInterrupt(digitalPinToInterrupt(3), arranque,RISING);
 
   //Declaro los pines de salida
-  for(int j = 4; j <= 9; j++){
-    pinMode(j,1);
-  }
+  pinMode(giroAdelante,1);pinMode(giroAtras,1);pinMode(pinVelocidad,1);
 
-  //Mandamos todos los pines a 0
-  for(int j = 4; j <= 9; j++){
-    digitalWrite(j,0);
-  }
-
-  //Arranque de prueba para el motor
-  digitalWrite(giroAdelante,1);  //Horario
-  digitalWrite(giroAtras,0); //Antiorario
-  analogWrite(pinVelocidad, potencia); //Pwm
 
 }
 
@@ -50,6 +39,14 @@ void inHome(){
   encoderPos=0;
 }
 
+void arranque(){
+  encoderPos=0;
+  //Arranque de prueba para el motor
+  digitalWrite(giroAdelante,1);  //Horario
+  digitalWrite(giroAtras,0); //Antiorario
+  analogWrite(pinVelocidad, potencia); //Pwm
+}
+
 void pararMotor(){
   digitalWrite(giroAdelante,0);  //Horario
   digitalWrite(giroAtras,0); //Antiorario
@@ -65,12 +62,11 @@ void FrenarMotor(){
 
 void loop() {
 
-  //Determinamos la revolucion que quiero
-  if(encoderPos >= (2096*vueltas)){
+  if(encoderPos >= 3900){
     FrenarMotor();
-    Serial.println(encoderPos);
-    while(1);
-
+    //Serial.println(encoderPos);
   }
+
+
 
 }
