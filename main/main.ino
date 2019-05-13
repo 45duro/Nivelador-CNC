@@ -33,8 +33,8 @@ byte seleccionador = 0;
 // 131*16 = 2096 tics a la salida
 
 unsigned long encoderPos=0;
-float vueltas = 10, constante = 0.125;
-int potencia = 255;
+float vueltas = 1, constante = 0.125;
+int potencia = 200;
 
 //Motor
 byte giroAdelante = 9, giroAtras = 4, pinVelocidad = 6;
@@ -182,6 +182,8 @@ void keypadEvent(KeypadEvent key){
 
         if (key == '0') {
           toHome();
+          //variable vueltas = 0;
+          vueltas = 0;
           Serial.println("a casa");
         }
 
@@ -230,16 +232,20 @@ void loop()
       lcd.setCursor(0,1);
       lcd.print("    Sistema   ");
       seleccionador = 3;
-
-      altura * 10;
+      Serial.println(altura);
+      altura *= 10;
+      Serial.println(altura);
       vueltas = constante * altura;
+      Serial.println(vueltas);
+      Serial.println(vueltas*2096);
       arrancarMotor();
   }
 
   while(seleccionador == 3){
-    //Serial.println(encoderPos);
-    if(encoderPos >= (2096*vueltas)){
+    Serial.println(encoderPos);
+    if(encoderPos >= (int(2096*vueltas))){
       FrenarMotor();
+      Serial.println("joder");
       Serial.println(encoderPos);
       seleccionador = 0;
 
