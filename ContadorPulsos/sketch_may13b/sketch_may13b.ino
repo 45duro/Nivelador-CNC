@@ -2,8 +2,9 @@
 // lo que quiere decir que para 360 grados de giro o una revolucion se obtendrá
 // 131*16 = 2096 tics a la salida
 
-volatile int encoderPos=0;
-int vueltas = 1;
+volatile byte encoderPos1=0;
+volatile unsigned int encoderPos=0;
+int vueltas = 28;
 int potencia = 2500, flancos=2000;
 //Motor
 byte giroAdelante = 9, giroAtras = 4, pinVelocidad = 6;
@@ -26,7 +27,10 @@ void setup() {
 
 //Funcion para contar
 void Encoder(){
-  encoderPos++;
+  encoderPos1++;
+  if(encoderPos1>=255)
+    encoderPos++;
+  
   //alcolocarse se realentyiza el sistema y colapsa la mediccion por eso mejor no colocar ningun print
   //Serial.println(encoderPos);
 }
@@ -62,7 +66,7 @@ void FrenarMotor(){
 
 void loop() {
 
-  if(encoderPos >= 3900){
+  if(encoderPos >= 16*vueltas){
     FrenarMotor();
     //Serial.println(encoderPos);
   }
