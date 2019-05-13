@@ -32,7 +32,8 @@ byte seleccionador = 0;
 // lo que quiere decir que para 360 grados de giro o una revolucion se obtendrá
 // 131*16 = 2096 tics a la salida
 
-volatile unsigned long encoderPos=0;
+volatile byte encoderPos1=0;
+volatile unsigned int encoderPos=0;
 float vueltas = 1, constante = 0.125;
 int potencia = 200;
 
@@ -42,7 +43,10 @@ byte giroAdelante = 9, giroAtras = 4, pinVelocidad = 6;
 
 //Funcion para contar
 void Encoder(){
-  encoderPos++;
+  encoderPos1++;
+  if(encoderPos1>=255){
+    encoderPos++;
+  }
   //alcolocarse se realentyiza el sistema y colapsa la mediccion por eso mejor no colocar ningun print
   //Serial.println(encoderPos);
 }
@@ -239,7 +243,9 @@ void loop()
 
   while(seleccionador == 3){
     Serial.println(encoderPos);
-    if(encoderPos > (int(4192*vueltas))){
+    //El numero de 16 resulta de dividir 4192 * 255 del encoder, esto solo es para que sea mas rapido
+    //Y ueda abarcar mayor rango del sin fin con el encoder
+    if(encoderPos > (int(16*vueltas))){
       FrenarMotor();
       //Serial.println("joder");
       Serial.println(encoderPos);
