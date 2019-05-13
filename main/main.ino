@@ -6,7 +6,7 @@
 //Variables de LCD
 LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
-//Variavles de KEyPAD
+//Variables de KEyPAD
 const byte ROWS = 4; //four rows
 const byte COLS = 3; //three columns
 char keys[ROWS][COLS] = {
@@ -38,6 +38,49 @@ int potencia = 255;
 
 //Motor
 byte giroAdelante = 9, giroAtras = 4, pinVelocidad = 6;
+
+
+//Funcion para contar
+void Encoder(){
+  encoderPos++;
+  //alcolocarse se realentyiza el sistema y colapsa la mediccion por eso mejor no colocar ningun print
+  //Serial.println(encoderPos);
+}
+
+void toHome(){
+  digitalWrite(giroAdelante,0);  //Horario
+  digitalWrite(giroAtras,1); //Antiorario
+  analogWrite(pinVelocidad, 100); //Pwm
+
+}
+
+void inHome(){
+
+  FrenarMotor();
+  delay(500);
+  pararMotor();
+  encoderPos=0;
+}
+
+void pararMotor(){
+  digitalWrite(giroAdelante,0);  //Horario
+  digitalWrite(giroAtras,0); //Antiorario
+  analogWrite(pinVelocidad, 0); //Pwm
+}
+
+void FrenarMotor(){
+  digitalWrite(giroAdelante,1);  //Horario
+  digitalWrite(giroAtras,1); //Antiorario
+  analogWrite(pinVelocidad, 255); //Pwm
+}
+
+void arrancarMotor(){
+  //Arranque de prueba para el motor
+  digitalWrite(giroAdelante,1);  //Horario
+  digitalWrite(giroAtras,0); //Antiorario
+  analogWrite(pinVelocidad, potencia); //Pwm
+}
+
 
 
 
@@ -96,17 +139,6 @@ void mostrarBienvenida(){
   delay (5000);
 }
 
-/*
-String capturaTeclado(){
-  char key = keypad.getKey();
-
-    if (key) {
-        String m = String(key);
-        Serial.println(m);
-    }
-}*/
-
-
 
 void keypadEvent(KeypadEvent key){
     switch (keypad.getState()){
@@ -147,6 +179,14 @@ void keypadEvent(KeypadEvent key){
             alturaChain = "";
             
         }
+
+        if (key == '0') {
+          toHome();
+          Serial.println("a casa");
+        }
+
+
+        
         break;
     }
 }
@@ -166,6 +206,7 @@ boolean estaturaValida(String altura){
 void loop()
 {
   lcd.clear();
+ 
   while(seleccionador == 0){
     //Funcion para obtener lo del teclado y activa el listener Event
     char key = keypad.getKey();
@@ -175,6 +216,12 @@ void loop()
     lcd.setCursor(0, 1);
     lcd.print(" cm: ");
     lcd.print(alturaChain);
+    lcd.setCursor(13, 1);
+    lcd.print("H");
+    lcd.print(":");
+    lcd.print("0");
+
+    
   }
   
   while(seleccionador == 1){
@@ -190,47 +237,18 @@ void loop()
   }
 
   while(seleccionador == 3){
-    Serial.println(encoderPos);
+    //Serial.println(encoderPos);
     if(encoderPos >= (2096*vueltas)){
       FrenarMotor();
       Serial.println(encoderPos);
       seleccionador = 0;
+
+      //avisar que el encoder llego a su posicion
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Ubicado en: "); lcd.print(altura); 
     }
   }
   
 
-}
-
-//Funcion para contar
-void Encoder(){
-  encoderPos++;
-  //alcolocarse se realentyiza el sistema y colapsa la mediccion por eso mejor no colocar ningun print
-  //Serial.println(encoderPos);
-}
-
-void inHome(){
-
-  FrenarMotor();
-  delay(500);
-  pararMotor();
-  encoderPos=0;
-}
-
-void pararMotor(){
-  digitalWrite(giroAdelante,0);  //Horario
-  digitalWrite(giroAtras,0); //Antiorario
-  analogWrite(pinVelocidad, 0); //Pwm
-}
-
-void FrenarMotor(){
-  digitalWrite(giroAdelante,1);  //Horario
-  digitalWrite(giroAtras,1); //Antiorario
-  analogWrite(pinVelocidad, 255); //Pwm
-}
-
-void arrancarMotor(){
-  //Arranque de prueba para el motor
-  digitalWrite(giroAdelante,1);  //Horario
-  digitalWrite(giroAtras,0); //Antiorario
-  analogWrite(pinVelocidad, potencia); //Pwm
 }
