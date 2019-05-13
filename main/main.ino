@@ -15,8 +15,8 @@ char keys[ROWS][COLS] = {
 {'7','8','9'},
 {'*','0','#'}
 };
-byte rowPins[ROWS] = {10, 9, 8, 7}; //connect to the row pinouts of the kpd
-byte colPins[COLS] = {6, 5, 4}; //connect to the column pinouts of the kpd
+byte rowPins[ROWS] = {5, 7, 8, 10}; //connect to the row pinouts of the kpd
+byte colPins[COLS] = {11, 12, 13}; //connect to the column pinouts of the kpd
 
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
@@ -37,7 +37,7 @@ float vueltas = 10, constante = 0.125;
 int potencia = 255;
 
 //Motor
-byte giroAdelante = 12, giroAtras = 13, pinVelocidad = 11;
+byte giroAdelante = 9, giroAtras = 4, pinVelocidad = 6;
 
 
 
@@ -60,9 +60,7 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(3), inHome,RISING);
   
   //Declaro los pines de salida
-  for(int j = 11; j <= 13; j++){
-    pinMode(j,1);
-  }
+  pinMode(giroAdelante,1);pinMode(giroAtras,1);pinMode(pinVelocidad,1);
 }
 
 void mostrarBienvenida(){

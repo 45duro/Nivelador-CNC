@@ -3,7 +3,7 @@
 // 131*16 = 2096 tics a la salida
 
 unsigned long encoderPos=0;
-float vueltas = 1;
+float vueltas = 2;
 int potencia = 20;
 //Motor
 byte giroAdelante = 9, giroAtras = 4, pinVelocidad = 6;
@@ -11,12 +11,12 @@ byte giroAdelante = 9, giroAtras = 4, pinVelocidad = 6;
 
 void setup() {
   //Con este baudiaje se ajusta perfeccto
-  Serial.begin(57600);
+  Serial.begin(9600);
 
   //Si o si toca con interrupcion ya que de otromodo lo hace mal, 
   //se queda o puierde pulso y el baudiaje de la comunicación lo vuelve loco
-  attachInterrupt(digitalPinToInterrupt(3), Encoder,FALLING);
-  attachInterrupt(digitalPinToInterrupt(2), inHome,RISING);
+  attachInterrupt(digitalPinToInterrupt(2), Encoder,FALLING);
+  attachInterrupt(digitalPinToInterrupt(3), inHome,RISING);
 
   //Declaro los pines de salida
   for(int j = 4; j <= 9; j++){
