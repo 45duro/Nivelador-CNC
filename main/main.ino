@@ -20,15 +20,26 @@ byte colPins[COLS] = {6, 5, 4}; //connect to the column pinouts of the kpd
 
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
-//Variables De TIempo
-//unsigned long loopCount =0;
-//unsigned long startTime;
-
 //Variables Globales del programa
 String alturaChain = "";
-int altura = 0,limiteMaximo = 230, limiteMinimo = 110;
-
+int altura = 0,limiteMaximo = 230, limiteMinimo = 1;
 byte seleccionador = 0;
+
+
+/*Variables de Motor
+*/
+//Relacion del motor de 131 con conteo de falnco de 16 tics por vuelta del motor
+// lo que quiere decir que para 360 grados de giro o una revolucion se obtendrá
+// 131*16 = 2096 tics a la salida
+
+unsigned long encoderPos=0;
+float vueltas = 10, constante = 0.125;
+int potencia = 255;
+
+//Motor
+byte giroAdelante = 12, giroAtras = 13, pinVelocidad = 11;
+
+
 
 void setup()
 {
@@ -43,8 +54,15 @@ void setup()
   Serial.begin(57600);
   
   
-  //startTime = millis();
+  //Si o si toca con interrupcion ya que de otromodo lo hace mal, 
+  //se queda o puierde pulso y el baudiaje de la comunicación lo vuelve loco
+  attachInterrupt(digitalPinToInterrupt(2), Encoder,FALLING);
+  attachInterrupt(digitalPinToInterrupt(3), inHome,RISING);
   
+  //Declaro los pines de salida
+  for(int j = 11; j <= 13; j++){
+    pinMode(j,1);
+  }
 }
 
 void mostrarBienvenida(){
@@ -160,13 +178,61 @@ void loop()
     lcd.print(" cm: ");
     lcd.print(alturaChain);
   }
-
+  
   while(seleccionador == 1){
       lcd.setCursor(0,0);
-      lcd.print("Ajustando el");
+      lcd.print("  Ajustando el  ");
       lcd.setCursor(0,1);
-      lcd.print("Sistema");
+      lcd.print("    Sistema   ");
+      seleccionador = 3;
+
+      altura * 10;
+      vueltas = constante * altura;
+      arrancarMotor();
+  }
+
+  while(seleccionador == 3){
+    Serial.println(encoderPos);
+    if(encoderPos >= (2096*vueltas)){
+      FrenarMotor();
+      Serial.println(encoderPos);
+      seleccionador = 0;
+    }
   }
   
 
+}
+
+//Funcion para contar
+void Encoder(){
+  encoderPos++;
+  //alcolocarse se realentyiza el sistema y colapsa la mediccion por eso mejor no colocar ningun print
+  //Serial.println(encoderPos);
+}
+
+void inHome(){
+
+  FrenarMotor();
+  delay(500);
+  pararMotor();
+  encoderPos=0;
+}
+
+void pararMotor(){
+  digitalWrite(giroAdelante,0);  //Horario
+  digitalWrite(giroAtras,0); //Antiorario
+  analogWrite(pinVelocidad, 0); //Pwm
+}
+
+void FrenarMotor(){
+  digitalWrite(giroAdelante,1);  //Horario
+  digitalWrite(giroAtras,1); //Antiorario
+  analogWrite(pinVelocidad, 255); //Pwm
+}
+
+void arrancarMotor(){
+  //Arranque de prueba para el motor
+  digitalWrite(giroAdelante,1);  //Horario
+  digitalWrite(giroAtras,0); //Antiorario
+  analogWrite(pinVelocidad, potencia); //Pwm
 }
