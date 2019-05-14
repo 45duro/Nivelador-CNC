@@ -34,7 +34,7 @@ byte seleccionador = 0;
 
 volatile byte encoderPos1=0;
 volatile unsigned int encoderPos=0;
-float vueltas = 1, constante = 0.125;
+float vueltas = 1, constante = 0.666;
 int potencia = 200;
 
 //Motor
