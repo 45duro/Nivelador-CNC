@@ -13,10 +13,10 @@ void setup() {
 
 void loop() {
   digitalWrite(7,0);
-  digitalWrite(4,0);
+  digitalWrite(4,1);
   digitalWrite(8,0);
-  digitalWrite(9,1);
-  analogWrite(5, 255);
+  digitalWrite(9,0);
+  analogWrite(5, 50);
   analogWrite(6, 255);
 
 }
