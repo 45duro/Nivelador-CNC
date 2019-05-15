@@ -22,7 +22,7 @@ Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
 //Variables Globales del programa
 String alturaChain = "";
-int altura = 0,limiteMaximo = 230, limiteMinimo = 1;
+int altura = 0,limiteMaximo = 190, limiteMinimo = 151, medidaPunto0 = 150;
 byte seleccionador = 0;
 boolean contadorDeHome = 0;
 
@@ -253,7 +253,8 @@ void loop()
       lcd.setCursor(0,1);
       lcd.print("    Sistema   ");
       seleccionador = 3;
-      
+
+      altura = altura - medidaPunto0;
       altura *= 10;
       vueltas = constante * altura;
       //Serial.println(vueltas);
