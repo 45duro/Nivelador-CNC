@@ -60,19 +60,24 @@ void toHome(){
 }
 
 void inHome(){
-
+  
   if(contadorDeHome){
-    contadorDeHome = 0;
+    Serial.println("Motor despegando");
     
   }else{
     FrenarMotor();
     delay(500);
     pararMotor();
     encoderPos=0;
-    contadorDeHome=1;  
+    
   }
-  
-
+  /*
+  FrenarMotor();
+  delay(500);
+  pararMotor();
+  encoderPos=0;
+  contadorDeHome=1;
+  */
 }
 
 void pararMotor(){
@@ -183,6 +188,9 @@ void keypadEvent(KeypadEvent key){
               seleccionador = 1;
               delay(2000);
               lcd.clear();
+
+              //Este es el que manda ha habilitar el contador para que al subir la interrupcion no lo afecte
+              contadorDeHome = 1;
               
             }
             
@@ -194,7 +202,10 @@ void keypadEvent(KeypadEvent key){
           toHome();
           //variable vueltas = 0;
           vueltas = 0;
+          //Este es el que manda ha habilitar el contador para que al subir la interrupcion si lo afecte
+          contadorDeHome = 0;
           Serial.println("a casa");
+          
         }
 
 

@@ -16,7 +16,7 @@ void loop() {
   digitalWrite(4,1);
   digitalWrite(8,0);
   digitalWrite(9,0);
-  analogWrite(5, 50);
-  analogWrite(6, 255);
+  analogWrite(5, 200);
+  analogWrite(6, 0);
 
 }

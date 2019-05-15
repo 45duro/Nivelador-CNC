@@ -22,9 +22,9 @@ Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
 //Variables Globales del programa
 String alturaChain = "";
-int altura = 0,limiteMaximo = 190, limiteMinimo = 151, alturaDeInicio = 150;
+int altura = 0,limiteMaximo = 230, limiteMinimo = 1;
 byte seleccionador = 0;
-
+boolean contadorDeHome = 0;
 
 /*Variables de Motor
 */
@@ -34,11 +34,12 @@ byte seleccionador = 0;
 
 volatile byte encoderPos1=0;
 volatile unsigned int encoderPos=0;
-float vueltas = 1, constante = 0.666;
+float vueltas = 1, constante = 0.66;
 int potencia = 200;
 
 //Motor
 byte giroAdelante = 9, giroAtras = 4, pinVelocidad = 6;
+
 
 
 //Funcion para contar
@@ -59,11 +60,24 @@ void toHome(){
 }
 
 void inHome(){
-
+  
+  if(contadorDeHome){
+    Serial.println("Motor despegando");
+    
+  }else{
+    FrenarMotor();
+    delay(500);
+    pararMotor();
+    encoderPos=0;
+    
+  }
+  /*
   FrenarMotor();
   delay(500);
   pararMotor();
   encoderPos=0;
+  contadorDeHome=1;
+  */
 }
 
 void pararMotor(){
@@ -174,6 +188,9 @@ void keypadEvent(KeypadEvent key){
               seleccionador = 1;
               delay(2000);
               lcd.clear();
+
+              //Este es el que manda ha habilitar el contador para que al subir la interrupcion no lo afecte
+              contadorDeHome = 1;
               
             }
             
@@ -185,7 +202,10 @@ void keypadEvent(KeypadEvent key){
           toHome();
           //variable vueltas = 0;
           vueltas = 0;
+          //Este es el que manda ha habilitar el contador para que al subir la interrupcion si lo afecte
+          contadorDeHome = 0;
           Serial.println("a casa");
+          
         }
 
 
@@ -233,9 +253,8 @@ void loop()
       lcd.setCursor(0,1);
       lcd.print("    Sistema   ");
       seleccionador = 3;
-
+      
       altura *= 10;
-      altura -=alturaDeInicio;//150
       vueltas = constante * altura;
       //Serial.println(vueltas);
       //Serial.println(vueltas*3900);
