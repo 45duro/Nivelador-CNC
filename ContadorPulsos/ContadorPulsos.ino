@@ -4,7 +4,7 @@
 
 volatile int encoderPos=0;
 float vueltas = 1;
-int potencia = 50;
+int potencia = 100;
 //Motor
 byte giroAdelante = 9, giroAtras = 4, pinVelocidad = 6;
 
